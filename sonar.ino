@@ -5,7 +5,7 @@
 #define SERVO 3
 
 #define SONIC_SPEED_FACTOR 340
-#define MAX_ANGLE 170
+#define MAX_ANGLE 180
 #define SONIC_TIMEOUT 3000
 
 Servo servo;
