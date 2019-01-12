@@ -1,21 +1,18 @@
 #include <Servo.h>
+#include <NewPing.h>
 
 #define TRIG 4
 #define ECHO 2
 #define SERVO 3
-
-#define SONIC_SPEED_FACTOR 343
 #define MAX_ANGLE 180
-#define SONIC_TIMEOUT 3650
 
+NewPing sonar(TRIG, ECHO, 50);
 Servo servo;
 byte angle = 0;
 bool up = true;
 byte buff[2];
 
 void setup() {
-  pinMode(TRIG, OUTPUT);
-  pinMode(ECHO, INPUT);
   servo.attach(SERVO);
   Serial.begin(115200);
 }
@@ -25,25 +22,12 @@ void loop() {
   if (angle == 0 && !up) { up = true; }
   servo.write(angle);
 
-  buff[0] = get_distance();
+  buff[0] = sonar.ping_cm();
   buff[1] = angle;
-  Serial.print(buff[0]);
-  //Serial.write(buff, sizeof(buff) / sizeof(byte));
+  Serial.write(buff, sizeof(buff) / sizeof(byte));
   
   if (up) { angle++; }
   else { angle--; }
   
   delay(100);
-}
-
-byte get_distance()
-{
-  long t = 0;
-  digitalWrite(TRIG, HIGH);
-  delayMicroseconds(10);
-  noInterrupts();
-  digitalWrite(TRIG, LOW);
-  t = pulseIn(ECHO, HIGH, SONIC_TIMEOUT);
-  interrupts();
-  return ((t / 2) * SONIC_SPEED_FACTOR) / 10000;
 }
